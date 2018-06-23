@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>三點式聽力測驗</title>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+        <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+        
+        <script type="text/javascript">
+//            $(document).ready(function() {
+//                setTimeout("start()",500); 
+//                
+////                start();
+//            });
+
+            
+        </script>
+        
+        <style type="text/css">
+            
+            .progressBar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 2%;
+                height: 0.8vmin;
+                background-color: #CEE7AB;
+            }
+            
+            
+            .main {
+                position: relative;
+                max-width: 640px;
+                margin: 0 auto;
+                text-align: center;
+                margin-top: 8vmin;
+                
+            }
+            .top {
+                position: relative;
+                width: 90%;
+                margin: 0 auto;
+                text-align: center;
+            }
+            .topTitle {
+                position: relative;
+                text-align: left;
+                font-family: PingFangSC-Semibold;
+                font-size: 7.6vmin;
+                color: #333333;
+            }
+            .topSubtitle {
+                position: relative;
+                text-align: left;
+                font-family: PingFangSC-Regular;
+                font-size: 4vmin;
+                color: #666666;
+                margin-top: 4vmin;
+            }
+            .center {
+                position: relative;
+                width: 50%;
+                margin: 0 auto;
+                text-align: center;
+                margin-top: 2vmin;
+            }
+            .centerBtn {
+                position: relative;
+                width: 100%;
+                padding-top: 100%;
+                
+                border-radius: 50%;
+                background-color: #F4F4F4;
+            }
+            .centerBtn2 {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                width: 80%;
+                height: 80%;
+                border-radius: 50%;
+                background-color: #FFFFFF;
+                box-shadow: 2vmin 2vmin 2vmin 0  rgba(199,199,204,0.62);
+            }
+            #startBtn {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                width: 40%;
+                height: 40%;
+            }
+            .centerTitle {
+                position: relative;
+                width: 100%;
+                font-family: PingFangSC-Medium;
+                font-size: 5vmin;
+                color: #A78466;
+                text-align: center;
+                margin-top: 2vmin;
+            }
+            .centerSubtitle {
+                position: relative;
+                width: 100%;
+                font-family: PingFangSC-Regular;
+                font-size: 3.9vmin;
+                color: #999999;
+                text-align: center;
+                margin-top: 2vmin;
+            }
+            .bottom {
+                position: relative;
+                width: 90%;
+                padding-top: 38%;
+                margin: 0 auto;
+                margin-top: 8vmin;
+                
+            }
+            .voiceBtn {
+                position: absolute;
+                width: 48%;
+                height: 45%;
+                background-image: linear-gradient(-212deg, #FF9F00 0%,#FF9300  99%);
+                box-shadow: 2vmin 2vmin 2vmin 0 rgba(178,120,0,0.19);
+                border-style: none;
+                font-family: PingFangSC-Medium;
+                font-size: 6vmin;
+                color: #FFFFFF;
+                text-align: center;
+            
+            }
+            
+            
+            
+            p {
+                margin: 0;
+            }
+        
+        
+        
+        
+        
+        </style>
+    
+    </head>
+
+    <body>
+        <div class="progressBar" id="progressBar">
+            
+        
+        </div>
+        
+        <div class="main">
+            <div class="top">
+                <div class="topTitle">
+                    <p>听力检测</p>
+                </div>
+                <div class="topSubtitle">
+                    <p id="freqLab">频率:125Hz</p>
+                    <p id="volumeLab">音量:50dB</p>
+                    <p id="directLab" hidden>左聲道</p>
+                    <p id="pointLab" hidden>選中：xxx.mp3</p>
+                </div>
+            </div>
+            <div class="center">
+            <audio id="testPlayer">
+            <source id="testSource" src="resource/tripletone/S_0125_10_1Do.mp3" type="audio/mp3">
+            <p>Your brower doesn't support HTML5 audio.</p>
+            </audio>
+                <div class="centerBtn">
+                    <div class="centerBtn2">
+                        <input type="image"  src="images/play.png" id="startBtn" onclick="start();" >
+                    </div>
+                </div>
+                
+            <Button id="replayBtn" type="button" onclick="replay();" hidden>replay</Button>
+            
+            <div class="centerTitle">
+                <p id="playTitle">开始播放</p>
+                
+            </div>
+            <div class="centerSubtitle">
+                <p>请问您听到几声？</p>
+            </div>
+        
+            </div>
+            <div class="bottom">
+            <input type="button" class="voiceBtn" name="voiceBtnL" onclick="check(1);" value="1声" style="top: 0;left: 0;">
+            <input type="button" class="voiceBtn" name="voiceBtnR" onclick="check(2);" value="2声" style="top: 0;left: 50%">
+            <input type="button" class="voiceBtn" name="voiceBtnL" onclick="check(3);" value="3声" style="top:50%; left: 0;">
+            <input type="button" class="voiceBtn" name="voiceBtnR" onclick="check(0);" value="没声音" style="top: 50%;left: 50%;">
+<!--
+            <button name="voiceBtn" type="button" onclick="check(1);">1声</button>
+            <button name="voiceBtn" type="button" onclick="check(2);">2声</button>
+            <button name="voiceBtn" type="button" onclick="check(3);">3声</button>
+            <button name="voiceBtn" type="button" onclick="check(0);">没声音</button>
+-->
+        
+        </div>
+        
+        
+        </div>
+        
+        
+
+                <form action="userData.html" method="get">
+            <input id="hearingData" type="hidden" name="hearingData" value="">
+　       <input id="submit" type="submit" hidden>
+         </form>
+        
+            <p id="finalResult1" hidden>U'll see this if u failed</p>
+            <p id="finalResult2" hidden>U'll see this if u failed</p>
+            <p id="finalResult3" hidden>U'll see this if u failed</p>
+            
+        <script>
+            var testPlayer2 = document.getElementById("testPlayer");
+            testPlayer2.onended = function() {
+                var playTitle = document.getElementById("playTitle");
+                playTitle.innerHTML = "重新播放";
+                var startBtn2 = document.getElementById("startBtn");
+                startBtn2.src = "images/play.png";
+            }
+            
+            
+        </script>
+
+    </body>
+    
+    <script type="application/javascript">
+        var progressBar = document.getElementById("progressBar");
+        var testPlayer = document.getElementById("testPlayer");
+        var testSource = document.getElementById("testSource");
+        var freqLab = document.getElementById("freqLab");
+        var volumeLab = document.getElementById("volumeLab");
+        var directLab = document.getElementById("directLab");
+        var pointLab = document.getElementById("pointLab");
+        
+        var startBtn = document.getElementById("startBtn");
+        var replayBtn = document.getElementById("replayBtn");
+        var submitBtn = document.getElementById("submit");
+        var playTitle = document.getElementById("playTitle");
+        
+        var finalResult1 = document.getElementById("finalResult1");
+        var finalResult2 = document.getElementById("finalResult2");
+        var finalResult3 = document.getElementById("finalResult3");
+        var randomNum;
+        var freqAry = ["0125", "0250", "0500", "1000", "2000", "4000", "8000"];
+        var userData = new Map();
+        var freqIndex = 0;
+        var volumedB = 50;
+        var progress = 2;
+        finalResult1.innerHTML = "start!";
+        
+
+        
+        function start() {
+            playRandom(freqAry[freqIndex], volumedB);
+//            startBtn.setAttribute("hidden", true);
+//            replayBtn.removeAttribute("hidden");
+            startBtn.setAttribute("onclick","replay();");
+            startBtn.src = "images/voice02.png";
+            playTitle.innerHTML = "正在播放";
+            
+            submitBtn.setAttribute("hidden", true);
+            
+            var btn = document.getElementsByName("voiceBtn");
+            for(i = 0; i < btn.length; i++) {
+                btn[i].removeAttribute("disabled");
+            }
+
+        }
+        
+        
+        
+
+        function playRandom(freq, dB) {
+            finalResult1.innerHTML = "playRandom!";
+            randomNum = Math.floor(Math.random()*3) + 1;
+            var fileStr = "resource/tripletone/" + "S_" + freq + "_" + dB + "_" + randomNum + "Do.mp3";
+            finalResult2.innerHTML = "fileStr:" +fileStr;
+            testSource.src = fileStr;
+            finalResult3.innerHTML = testSource.getAttribute("src");
+            freqLab.innerHTML = "頻率：" + new Number(freq) + "Hz";
+            volumeLab.innerHTML = "音量：" + dB + "dB";
+//            directLab.innerHTML = isRight ? "右聲道" : "左聲道";
+            pointLab.innerHTML = "選中：" + testSource.getAttribute("src").slice(20,36);
+            testPlayer.load();
+            testPlayer.play();
+            startBtn.src = "images/voice02.png";
+            playTitle.innerHTML = "正在播放";
+            
+        }
+        
+        function replay() {
+            finalResult1.innerHTML = "replay!";
+            testPlayer.pause();
+            testPlayer.currentTime = 0;
+            testPlayer.load();
+            testPlayer.play();
+            startBtn.src = "images/voice02.png";
+            playTitle.innerHTML = "正在播放";
+        }
+        
+        function check(choice) {
+            finalResult1.innerHTML = "check!";
+            var result = (choice == randomNum);
+            finalResult2.innerHTML = "choice:" + choice + "result:" + result;
+            switch(volumedB) {
+                case 10:
+                    if(result) {
+                        saveData(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 20;
+                        saveData(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 20:
+                    if(result) {
+                        volumedB = 10;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 30;
+                        saveData(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 30:
+                    if(result) {
+                        volumedB = 20;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 40;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 40:
+                    if(result) {
+                        saveData(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 50;
+                        saveData(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 50:
+                    if(result) {
+                        volumedB = 30;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 70;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 60:
+                    if(result) {
+                        volumedB = 50;
+                        saveData(freqAry[freqIndex], volumedB);
+                    } else {
+                        saveData(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 70:
+                    if(result) {
+                        volumedB = 60;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 80;
+                        playRandom(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+                case 80:
+                    if(result) {
+                        volumedB = 70;
+                        saveData(freqAry[freqIndex], volumedB);
+                    } else {
+                        volumedB = 90;
+                        saveData(freqAry[freqIndex], volumedB);
+                    }
+                    break;
+//                case 90:
+//                    if(result) {
+//                        volumedB = 80;
+//                        saveData(freqAry[freqIndex], volumedB, earDirect);
+//                    } else {
+//                        saveData(freqAry[freqIndex], volumedB, earDirect);
+//                    }
+//                    break;
+                default:
+                    alert("Some Error happened, please try again");
+                    break;
+                   }
+            
+            finalResult3.innerHTML = "userData :" + showMap(userData);
+        }
+        
+        function showAbbrMap(mapData){
+            var mapStr = "";
+//            for(i = 0; i < freqAry.length; i++) {//先左耳
+//                var keyStr = freqAry[i] + false;
+//                mapStr += "" + (mapData.get(keyStr) / 10);
+//            }
+//            for(i = 0; i < freqAry.length; i++) {//再右耳
+//                var keyStr = freqAry[i] + true;
+//                mapStr += "" + (mapData.get(keyStr) / 10);
+//            }
+            for(i = 0; i < freqAry.length; i++) {//先左耳
+                var keyStr = freqAry[i]
+                mapStr += "" + (mapData.get(keyStr) / 10);
+            }
+            return mapStr;//會得類似987898789897十二位數數字，分別代表左右耳各級聽力分貝//後改為98745678七位數字
+        }
+        
+        function showMap(mapData){
+            var mapStr = "";
+            
+            mapData.forEach(function (item, key, mapObj) {  
+                mapStr += key.toString() + item.toString() + "<br/>"; 
+            });  
+            return mapStr;
+        }
+        
+        function saveData(freq, dB) {
+            finalResult1.innerHTML = "savaData!";
+            finalResult2.innerHTML = "frequency:" +freq + " dB:" + dB;
+            userData.set(freq, dB);
+            
+            if(freq == freqAry[(freqAry.length-1)]) {
+                
+
+                    freqIndex = 0;
+                    volumedB = 50;
+                    progress = 2;
+                    finalResult3.innerHTML = "finished!";
+                    var btn = document.getElementsByName("voiceBtn");
+                    for(i = 0; i < btn.length; i++) {
+                        btn[i].setAttribute("disabled", true);
+                    }
+        
+//                    startBtn.removeAttribute("hidden");
+//                    startBtn.innerHTML = "restart";
+//                    replayBtn.setAttribute("hidden", true);
+//                    submitBtn.removeAttribute("hidden");
+//                    document.getElementById("hearingData").setAttribute("value", showAbbrMap(userData));
+                    var urlStr = "userData.html" + "?heringData=" + showAbbrMap(userData);
+                    window.location.assign(urlStr);
+                    
+            }else {
+                freqIndex += 1;
+                progress += 14;
+                progressBar.style.width = progress + "%";
+                volumedB = 50;
+                finalResult3.innerHTML = "freqIndex:" +freqIndex + " dB:" + volumedB;
+                playRandom(freqAry[freqIndex], volumedB);
+            }
+            
+        }
+        
+        function test1() {
+            
+        }
+    
+    </script>
+    
+    
+</html>

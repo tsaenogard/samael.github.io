@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>使用者資料</title>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+        <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+        
+        <style type="text/css">
+            .main {
+                position: relative;
+                max-width: 640px;
+                margin: 0 auto;
+                text-align: center;
+                margin-top: 8vmin;
+            }
+            .title {
+                position: relative;
+                width: 90%;
+                margin: 0 auto;
+                font-family: PingFangSC-Semibold;
+                font-size: 6.9vmin;
+                color: #333333;
+                text-align: center;
+            }
+            .subtitle {
+                position: relative;
+                width: 55%;
+                margin: 0 auto;
+                font-family: PingFangSC-Regular;
+                font-size: 4vmin;
+                color: #A78466;
+                text-align: center;
+                margin-top: 2vmin;
+            }
+            .music {
+                position: relative;
+                 margin-top: 6vmin;
+                
+            }
+            .eqMusic {
+                position: relative;
+                width: 50%;
+                margin: 0 auto;
+                float: left;
+            }
+            .normalMusic {
+                position: relative;
+                width: 50%;
+                margin: 0 auto;
+                margin-left: 50%;
+            }
+            .musicTitle {
+                position: relative;
+                font-family: PingFangSC-Medium;
+                font-size: 4vmin;
+                color: #666666;
+                letter-spacing: 0;
+                text-align: center;
+            }
+            img {
+                position: relative;
+                width: 85%;
+                margin-top: 4vmin
+            }
+            #playBtn1,#playBtn2 {
+                position: relative;
+                width: 30%;
+                margin: 0 auto;
+                margin-top: 4vmin;
+            }
+            .center {
+                position: relative;
+                width: 80%;
+                margin: 0 auto;
+                background-color: #FAF9FB;
+                font-family: PingFangSC-Regular;
+                font-size: 4vmin;
+                color: #A78466;
+                text-align: justify;
+                padding-top: 7vmin;
+                padding-bottom: 7vmin;
+                padding-right: 7vmin;
+                padding-left: 7vmin;
+                margin-top: 8vmin;
+            }
+            .bottom {
+                position: relative;
+                width: 85%;
+                padding-top: 18%;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 0;
+                margin-right: 0;
+                margin: auto;
+                text-align: center;
+                margin-top: 12vmin;
+            }
+            #submit {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-image: #C7C7CC;
+                border-radius: 6px;
+                border-style: none;
+                font-family: PingFangSC-Semibold;
+                font-size: 5vmin;
+                color: #FFFFFF;
+                letter-spacing: 0;
+                padding: 0;
+            }
+            
+            
+            p {
+                margin: 0;
+            }
+            a {
+                font-family: PingFangSC-Regular;
+                color: #A78466;
+                text-align: center;
+                text-decoration: none
+            }
+        
+        
+        
+        </style>
+        
+    </head>
+    <body>
+        <div class="main">
+            <div class="title">
+                <p>EarEQ智能音效试听</p>
+            </div>
+            <div class="subtitle">
+                <a id="goEnd" href="detailresult2.html">查看听力检测结果 ></a>
+            </div>
+            <div class="music">
+                <div class="eqMusic">
+                    <div class="musicTitle">
+                        <p>EarEQ音效</p>
+                        <img src="images/EQ%20Voice.png">
+                        <audio id="eqAudio">
+                            <source id="eqAudioSource" src="" type="audio/mp3">
+                            <p>Your brower doesn't support HTML5 audio.</p>
+                        </audio>
+                        <div class="musicBtn">
+                            <input type="image"  src="images/play02.png" id="playBtn1" onclick="playeq(1);">
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="normalMusic">
+                    <div class="musicTitle">
+                        <p>普通音效</p>
+                        <img src="images/EQ%20Voice.png">
+                        <audio id="normalAudio">
+                            <source id="normalAudioSource" src="" type="audio/mp3">
+                            <p>Your brower doesn't support HTML5 audio.</p>
+                        </audio>
+                        <div class="musicBtn">
+                            <input type="image"  src="images/play02.png" id="playBtn2" onclick="playeq(0);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="center">
+                <p>此音效由EarEQ技术模拟合成，使用平安智能护耳耳机可随时随地享受如此聆听体验</p>
+            </div>
+            <div class="bottom">
+            <form action="detailresult2.html" method="get">
+            <input id="age" type="hidden" name="age" value="">
+            <input id="gender" type="hidden" name="gender" value="">
+            <input id="hearingData" type="hidden" name="hearingData" value="">
+            <input id="submit" type="submit" value="马上拥有 >>" disabled>        
+        </form>
+        
+        </div>
+        </div>
+        
+
+        <script type="application/javascript">
+            var passData = getData();
+            var songNum = "01";
+            var eqPlayer = document.getElementById("eqAudio");
+            var eqSource = document.getElementById("eqAudioSource");
+            var normalPlayer = document.getElementById("normalAudio");
+            var normalSource = document.getElementById("normalAudioSource");
+            var submitBtn = document.getElementById("submit");
+            initial();
+            
+            document.getElementById("age").setAttribute("value",passData[0]);
+            document.getElementById("gender").setAttribute("value",passData[1]);
+            document.getElementById("hearingData").setAttribute("value",passData[2]);
+            
+            function getData() {
+            var strUrl;
+            if(location.search == "") {
+                strUrl = "?age=0&gender=0&hearingData=000000000000";
+            }else {
+                strUrl = location.search;
+            }
+            var getPara, ParaVal;
+            var aryPara = [];
+            var str;
+            if (strUrl.indexOf("?") != -1) { //代表有"?"
+                var getSearch = strUrl.split("?"); //回一個[String]
+                
+                getPara = getSearch[1].split("&");
+                for (i = 0; i < getPara.length; i++) {
+                    ParaVal = getPara[i].split("=");
+                    aryPara.push(ParaVal[1]);  //寫進value
+                }
+                
+            }
+                    return aryPara;
+
+        }
+        function parse(code) { //解析get的字串，還原成數字陣列
+            var numAry = [];
+            var numAry2;
+            numAry = code.split("");
+            numAry2 = new Array(numAry.length);
+            for(i = 0; i < numAry.length; i++) {
+                numAry2[i] = new Number(numAry[i]) * 10;
+            }
+            return numAry2;
+        }
+            
+            function initial() {
+                var fileStr = passData[2].charAt(6) + passData[2].charAt(5) + passData[2].charAt(3) + passData[2].charAt(2) +passData[2].charAt(0);
+                var eqStr = "resource/music/" + songNum + "/" + fileStr.charAt(0) + "/" + songNum + fileStr + ".mp3";
+                var noralStr = "resource/music/" + songNum + "/0/" + songNum + "00000.mp3";
+                eqSource.setAttribute("src",eqStr);
+                normalSource.setAttribute("src",noralStr);
+                document.getElementById("goEnd").setAttribute("href", "detailresult2.html" + location.search);
+                
+            }
+            
+            function playeq(num) {
+                if(num==0) {
+                     if (eqPlayer.duration > 0 && !eqPlayer.paused) {
+                        eqPlayer.pause();
+                        document.getElementById("playBtn1").setAttribute("src", "images/play02.png");
+                        normalPlayer.load();
+                        normalPlayer.play();
+                        document.getElementById("playBtn2").setAttribute("src", "images/pause.png");
+                    }else if(normalPlayer.duration > 0 && !normalPlayer.paused) {
+                        normalPlayer.pause();
+                        document.getElementById("playBtn2").setAttribute("src", "images/play02.png");
+                    }else {
+                        normalPlayer.load();
+                        normalPlayer.play();
+                        document.getElementById("playBtn2").setAttribute("src", "images/pause.png");
+                    }
+                }else if(num==1) {
+                    if (normalPlayer.duration > 0 && !normalPlayer.paused) {
+                        normalPlayer.pause();
+                        document.getElementById("playBtn2").setAttribute("src", "images/play02.png");
+                        eqPlayer.load();
+                        eqPlayer.play();
+                        document.getElementById("playBtn1").setAttribute("src", "images/pause.png");
+                    }else if(eqPlayer.duration > 0 && !eqPlayer.paused) {
+                        eqPlayer.pause();
+                        document.getElementById("playBtn1").setAttribute("src", "images/play02.png");
+                    }else {
+                        eqPlayer.load();
+                        eqPlayer.play();
+                        document.getElementById("playBtn1").setAttribute("src", "images/pause.png");
+                    }
+                }
+                
+            }
+            
+            
+            eqPlayer.onended = function() {
+                document.getElementById("playBtn1").setAttribute("src", "images/play02.png");
+                submitBtn.style.backgroundImage = "linear-gradient(-206deg, #FF9300 0%, #FF6900 95%)";
+                submitBtn.removeAttribute("disabled");
+                
+            }
+            normalPlayer.onended = function() {
+                document.getElementById("playBtn2").setAttribute("src", "images/play02.png");
+                submitBtn.style.backgroundImage = "linear-gradient(-206deg, #FF9300 0%, #FF6900 95%)";
+                submitBtn.removeAttribute("disabled");
+            }
+            
+        </script>
+    </body>
+</html>

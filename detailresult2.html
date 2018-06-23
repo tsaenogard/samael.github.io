@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>聽力測驗結果</title>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+        <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+        <!--[if Ite IE 8]><script language="javascrupt" type="text/javascript" src="js/plugins/flot/excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="js/flot/jquery.flot.symbol.js"></script>
+        <script type="text/javascript" src="js/flot/jquery.flot.axislabels.js"></script>
+        <script type="text/javascript">
+            var data = [
+                [1,70],[2,80],[3,40],[4,60],[5,70],[6,90],[7,40],[8,80],[9,50],[10,80]
+            ];
+            
+            var resultLabel = document.getElementById("resultStr");
+        var volumeAry = parse(getData());
+        var freqAry = ["0125","0250", "0500", "1000", "2000", "4000", "8000"];
+        var rightAry = new Array(7);
+            getRLAry();
+            
+            var dataset = [
+              {
+                  label: "hearingTest",
+                  data:rightAry,
+                  points: {fillColor: "#FFB444"}
+              }
+            ];
+            
+            var options = {
+                series: {
+                    lines: {
+                        show: true,
+                        lineWidth: 4,
+                        fill: true,
+                        fillColor: { colors: [{ opacity: 0.1 }, { opacity: 1}] }
+                    },
+                    points: {
+                        show: true,
+                        fill: true,
+                        
+                        radius: 5,
+                        symbol: "circle"
+                    },
+                    shadowSize: 0
+                },
+                xaxis: {
+                    show: true,
+                    tickSize: 1,
+                    min: 1,
+                    max: 7,
+                    tickFormatter: function(num, obj) {
+                        return freqAry[num - 1];
+                    },
+                    axisLabel: "Frequency(Hz)",
+                    axisLabelUseCanvas: true,
+                    axisLabelFontSizePixels: 12, //字大
+                    axisLabelFontFamily: 'Verdana, Arial', //字型
+                    axisLabelPadding: 20,  //與圖表距離
+                },
+                yaxis: {
+                    tickSize: 10,
+                    axisLabel: "dB",
+                    max: 100,
+                    min: -10,
+                    transform: function(n) {
+                      return -n;  
+                    },
+                    inverseTransform: function(n) {
+                      return -n;  
+                    },
+                    axisLabelUseCanvas: true,
+                    axisLabelFontSizePixels: 12, //字大
+                    axisLabelFontFamily: 'Verdana, Arial', //字型
+                    axisLabelPadding: 10  //與圖表距離
+                }, 
+                legend: {
+                    show: false,
+                    labelBoxBorderColor: "#000000",
+                    backgroundColor: "#ffffff",
+                    position: "se"
+                },
+                grid: {
+                    //網格
+                    show: true,
+                    hoverable: true,
+                    aboveData: true,
+                    clickable: true,
+                    color: "#000000",
+                    //邊框
+                    borderWidth: 1,
+                    borderColor: "#ffffff"
+                },
+                colors: ["#FFB444"]
+            };
+            $(document).ready(function() {
+               $.plot($("#flot-placeholder"), dataset, options); 
+            });
+            
+            function getRLAry() {
+            for(i = 0; i < volumeAry.length; i++) {
+                    rightAry[i] = [(i + 1), volumeAry[i], 100];
+            }
+//                var resultLabel = document.getElementById("resultStr");
+//            resultLabel.innerHTML = leftAry + " " + rightAry;
+        }
+    
+        function getData() {
+            var strUrl;
+            if(location.search == "") {
+                strUrl = "?age=0&gender=0&hearingData=000000000000";
+            }else {
+                strUrl = location.search;
+            }
+            var getPara, ParaVal;
+            var aryPara = [];
+            var str;
+            if (strUrl.indexOf("?") != -1) { //代表有"?"
+                var getSearch = strUrl.split("?"); //回一個[String]
+                
+                getPara = getSearch[1].split("&");
+                for (i = 0; i < getPara.length; i++) {
+                    ParaVal = getPara[i].split("=");
+                    aryPara.push(ParaVal[1]);  //寫進value
+                }
+                
+            }
+                    return aryPara[2];
+
+        }
+        function parse(code) { //解析get的字串，還原成數字陣列
+            var numAry = [];
+            var numAry2;
+            numAry = code.split("");
+            numAry2 = new Array(numAry.length);
+            for(i = 0; i < numAry.length; i++) {
+                numAry2[i] = new Number(numAry[i]) * 10;
+            }
+            return numAry2;
+        }
+            
+            function test() {
+                getRLAry();
+                alert(rightAry + " " + leftAry);
+                drawTable("right", rightAry);
+                drawTable("left", leftAry);
+            }
+        
+        </script>
+        
+        <style type="text/css">
+            .main {
+                position: relative;
+                max-width: 640px;
+                margin: 0 auto;
+                text-align: center;
+                margin-top: 8vmin;
+            }
+            .title {
+                position: relative;
+                width: 90%;
+                margin: 0 auto;
+                font-family: PingFangSC-Semibold;
+                font-size: 6.9vmin;
+                color: #333333;
+                text-align: center;
+            }
+            .content {
+                position: relative;
+                width: 95%;
+                margin: 0 auto;
+                font-family: PingFangSC-Regular;
+                font-size: 4vmin;
+                color: #666666;
+                text-align: justify;
+                margin-top: 4vmin;
+            }
+            .flot {
+                position: relative;
+                margin-top: 8vmin;
+            }
+            
+        
+            p {
+                margin: 0;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="main">
+            <div class="title">
+                <p>听力检测结果</p>
+            </div>
+            <div class="content">
+                <p>此处是针对这个折线图的专业解释文案</p>
+            </div>
+            <div class="flot" id="flot-placeholder" style="width: 95%; height: 65vmin;"></div>
+        
+        
+        </div>
+        
+        <p id="resultStr" hidden>u will see this if failed</p>
+    <button type="button" onclick="javascript:location.href='index.html'" hidden>回到聽力年齡測試</button>
+    <button type="button" onclick="javascript:location.href='detailexam2.html'" hidden>重試三點式聽力測試</button>
+    
+    </body>
+    
+    <script>
+    
+    </script>
+
+</html>
